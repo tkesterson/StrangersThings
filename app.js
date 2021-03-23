@@ -25,7 +25,6 @@ async function populatePosts() {
   }
 }
 populatePosts();
-//test change
 $("#posts").on("click", ".edit", function () {
   const postElement = $(this).closet(".post");
   const post = postElement.data("post");
