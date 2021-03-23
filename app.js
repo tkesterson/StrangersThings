@@ -39,4 +39,3 @@ $("#posts").on("click", ".delete", function () {
 $("#post-form").on("submit", function (event) {
   event.preventDefault();
 });
-//test change #2 grsdertesdf
