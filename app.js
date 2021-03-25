@@ -1,37 +1,42 @@
-const BASE_URL = "https://strangers-things.herokuapp.com/api/2101-vpi-web-pt";
+const BASE_URL =
+  "https://strangers-things.herokuapp.com/api/2101-vpi-rm-web-pt";
 async function populatePosts() {
   try {
-    const data = await readPosts();
-    const posts = data.data.posts;
+    const { data } = await readPosts();
+    const { posts } = data;
     const postListElement = $(".current-posts");
     //const { _id, title, description } = post;
     console.log(posts);
     posts.forEach((post) => {
-      postListElement.append(
-        $(`
-      <div class="post" data-id="${post._id}">
-      <h3>
-      <span class="title">
-        ${post.title}
-      </span>
-      <span class="price">
-          ${post.price}
-        </span>
-       </h3>
-        <pre>${post.description}</pre>
-        <footer class="actions">
-          <button class="action edit">EDIT</button>
-          <button class="action delete">DELETE</button>
-        </footer>
-        
-      </div>
-      `).data("post", post)
-      );
+      postListElement.append(renderPosts(post));
     });
   } catch (error) {
     console.error(error);
   }
 }
+const renderPosts = (post) => {
+  const { _id, title, price, description } = post;
+  console.log(post);
+  return $(`
+<div class="post" data-id="${_id}">
+<h3>
+<span class="title">
+  ${title}
+</span>
+<span class="price">
+    ${price}
+  </span>
+ </h3>
+  <pre>${description}</pre>
+  <footer class="actions">
+    <button class="action edit">EDIT</button>
+    <button class="action delete">DELETE</button>
+  </footer>
+  
+</div>
+`).data("post", post);
+};
+
 async function readPosts() {
   try {
     const url = `${BASE_URL}/posts`;
@@ -48,19 +53,21 @@ async function createPost(postObj) {
     const url = `${BASE_URL}/posts`;
     const response = await fetch(url, {
       method: "POST",
-      // headers: {
-      //   'Content-Type': 'application/json',
-      //   'Authorization': 'Bearer TOKEN_STRING_HERE'
-      // },
-      body: JSON.stringify({
-        post: {
-          title: "My favorite stuffed animal",
-          description:
-            "This is a pooh doll from 1973. It has been carefully taken care of since I first got it.",
-          price: "$480.00",
-          willDeliver: true,
-        },
-      }),
+      headers: {
+        "Content-Type": "application/json",
+        //   'Authorization': 'Bearer TOKEN_STRING_HERE'
+      },
+      body: JSON.stringify(
+        postObj
+        // {
+        // post: {
+        //   title: "My favorite stuffed animal",
+        //   description:
+        //     "This is a pooh doll from 1973. It has been carefully taken care of since I first got it.",
+        //   price: "$480.00",
+        //   willDeliver: true,
+        // }}
+      ),
     });
   } catch (error) {
     throw error;
@@ -107,7 +114,7 @@ $(".post-list").on("click", ".delete", async function () {
     throw error;
   }
 });
-$(".create-post").click((event) => {
+$(".create-post").click(async (event) => {
   event.preventDefault();
   $(".todo-form").trigger("reset");
   $(".modal").removeClass("open");
@@ -115,6 +122,11 @@ $(".create-post").click((event) => {
     title: $("#post-title").val(),
     body: $("#post-body").val(),
   };
+  try {
+    const newPost = await createPost(postObj);
+  } catch (error) {
+    throw error;
+  }
   console.log(postObj);
 });
 
