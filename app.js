@@ -5,7 +5,6 @@ async function populatePosts() {
     const { data } = await readPosts();
     const { posts } = data;
     const postListElement = $(".current-posts");
-    //const { _id, title, description } = post;
     console.log(posts);
     posts.forEach((post) => {
       postListElement.append(renderPosts(post));
@@ -16,7 +15,7 @@ async function populatePosts() {
 }
 const renderPosts = (post) => {
   const { _id, title, price, description } = post;
-  console.log(post);
+
   return $(`
 <div class="post" data-id="${_id}">
 <h3>

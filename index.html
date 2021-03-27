@@ -15,6 +15,7 @@
     <!-- our hard work below -->
     <link rel="stylesheet" href="style.css" />
     <script defer src="app.js" type="module"></script>
+    <script defer src="jqpricefix.js"></script>
   </head>
   <body>
     <div id="app">
@@ -30,10 +31,6 @@
           <i class="material-icons">check_circle</i>
           <span class="action-text">Remove Completed Posts</span>
         </button>
-        <button class="action remove-expired">
-          <i class="material-icons">delete_sweep</i>
-          <span class="action-text">Remove Expired Posts</span>
-        </button>
       </aside>
       <main>
         <section id="post-list" class="post-list">
@@ -44,20 +41,40 @@
       <div class="modal">
         <div class="content">
           <h3>Create New Post</h3>
-          <form class="post-form" action="" method="">
+          <form class="post-form" action="#" method="">
             <label for="post-title">Post Title</label>
-            <input type="text" id="post-title" required />
+            <input type="text" name="post-title" id="post-title" required />
             <h5>This is a required field</h5>
 
-            <label for="post-body">Body</label>
+            <label for="post-body">Description</label>
             <textarea
+              name="post-body"
+              id="post-body"
               style="resize: none"
               id="post-body"
-              columns="40"
-              rows="6"
+              columns="30"
+              rows="4"
               required
             ></textarea>
             <h5>This is a required field</h5>
+            <label for="post-price">Asking Price (USD)</label>
+            <input
+              type="text"
+              id="post-price"
+              name="post-price"
+              placeholder="$0.00"
+              required
+            />
+            <h5>This is a required field</h5>
+            <label for="post-location">Item Location</label>
+            <input
+              type="text"
+              name="post-location"
+              id="post-location"
+              placeholder="(optional)"
+            />
+            <label for="willdeliver">Willing to Deliver?</label>
+            <input type="checkbox" />
             <div class="actions">
               <button class="action create-post when-valid">
                 <i class="material-icons">add_circle</i>
