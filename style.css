@@ -181,15 +181,25 @@ main {
 }
 
 .post .actions {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.5fr 0.5fr;
   background: #ddf;
   padding: 8px;
 }
+.post .actions .action {
+  min-width: 7em;
 
+  justify-content: center;
+  justify-self: flex-end;
+}
 .post .actions .action:not(:first-of-type) {
   margin-left: 8px;
+}
+
+.post footer span {
+  font-family: sans-serif;
+  font-size: 0.8em;
+  align-self: center;
 }
 
 .modal:not(.open) {
@@ -301,7 +311,7 @@ main {
   padding-left: 35px;
   margin-bottom: 12px;
   cursor: pointer;
-  font-size: 22px;
+  font-size: 16px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -324,7 +334,7 @@ main {
   left: 0;
   height: 25px;
   width: 25px;
-  background-color: #eee;
+  background-color: #ddd;
 }
 
 /* On mouse-over, add a grey background color */

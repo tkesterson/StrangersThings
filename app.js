@@ -14,20 +14,24 @@ async function populatePosts() {
   }
 }
 const renderPosts = (post) => {
-  const { _id, title, price, description } = post;
+  let { title, price, description, location, willDeliver } = post;
+  if (location === "[On Request]") location = "Location available on request.";
+  const newPrice = price.includes("$");
 
   return $(`
-<div class="post" data-id="${_id}">
+<div class="post">
 <h3>
 <span class="title">
   ${title}
 </span>
 <span class="price">
-    ${price}
+    ${newPrice ? price : `$${price}`}
   </span>
  </h3>
   <pre>${description}</pre>
   <footer class="actions">
+<span class="loc">${location}</span>
+<span class="delivery">Delivery Available:${willDeliver ? "✅" : "❌"}</span>
     <button class="action edit">EDIT</button>
     <button class="action delete">DELETE</button>
   </footer>
