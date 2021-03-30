@@ -12,7 +12,6 @@
     <meta name="msapplication-TileColor" content="#FFFFFF" />
     <meta name="msapplication-TileImage" content="/favicon-144.png" />
     <meta name="msapplication-config" content="/browserconfig.xml" />
-    <!-- ****** faviconit.com favicons ****** -->
     <!-- fonts -->
     <link
       href="https://fonts.googleapis.com/css?family=Material+Icons|Tomorrow|Noto+Sans&display=swap"
@@ -113,7 +112,7 @@
                 <i class="material-icons">add_circle</i>
                 <span class="action-text">Create</span>
               </button>
-              <button type="button" class="action cancel-create-post">
+              <button type="button" class="action cancel">
                 <i class="material-icons">cancel</i>
                 <span class="action-text">Cancel</span>
               </button>
@@ -133,7 +132,8 @@
             <h5>This is a required field</h5>
             <div class="actions">
               <button type="button" class="action register">
-                Create Account
+                <i class="material-icons">account_circle</i>
+                <span class="action-text">Create Account</span>
               </button>
 
               <button class="action create-post when-valid">
@@ -144,7 +144,7 @@
                 <i class="material-icons">login</i>
                 <span class="action-text">Login</span>
               </button>
-              <button type="button" class="action cancel-login">
+              <button type="button" class="action cancel">
                 <i class="material-icons">cancel</i>
                 <span class="action-text">Cancel</span>
               </button>
@@ -158,26 +158,24 @@
           <h3>Create Account</h3>
           <form class="create-form" action="#" method="">
             <label for="create-name">Username:</label>
-            <input type="text" required />
-            <label for="create-email">Email:</label>
-            <input type="email" required />
+            <input type="text" id="create-name" required />
             <h5>This is a required field</h5>
             <label for="create-password">Password:</label>
-            <input type="password" required />
+            <input type="password" id="create-password" required />
             <h5>This is a required field</h5>
             <label for="confirm-password">Confirm Password:</label>
-            <input type="password" required />
+            <input type="password" id="confirm-password" required />
             <h5>This is a required field</h5>
             <div class="actions">
               <button class="action create-account when-valid">
-                <i class="material-icons">login</i>
-                <span class="action-text">Login</span>
+                <i class="material-icons">account_circle</i>
+                <span class="action-text">Create Account</span>
               </button>
               <button disabled class="action create-account when-invalid">
-                <i class="material-icons">login</i>
-                <span class="action-text">Login</span>
+                <i class="material-icons">account_circle</i>
+                <span class="action-text">Create Account</span>
               </button>
-              <button type="button" class="action cancel-create-account">
+              <button type="button" class="action cancel">
                 <i class="material-icons">cancel</i>
                 <span class="action-text">Cancel</span>
               </button>
