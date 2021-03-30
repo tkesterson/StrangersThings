@@ -93,12 +93,15 @@ async function deletePost(postId) {
     throw error;
   }
 }
+
 populatePosts();
+
 $(".post-list").on("click", ".edit", async function () {
   const postElement = $(this).closest(".post");
   const post = postElement.data("post");
   console.log(post);
 });
+
 $(".post-list").on("click", ".delete", async function () {
   const postElement = $(this).closest(".post");
   const post = postElement.data("post");
@@ -110,9 +113,16 @@ $(".post-list").on("click", ".delete", async function () {
     throw error;
   }
 });
+
+$(".action.cancel").click(() => {
+  $(".modal").removeClass("open");
+  $(".post-form").trigger("reset");
+  $(".login-form").trigger("reset");
+  $(".create-form").trigger("reset");
+});
+
 $(".create-post").click((event) => {
   event.preventDefault();
-
   const postObj = {
     title: $("#post-title").val(),
     description: $("#post-body").val(),
@@ -126,29 +136,22 @@ $(".create-post").click((event) => {
   $(".modal").removeClass("open");
 });
 
-$(".cancel-create-post").click(() => {
-  $(".modal-post").removeClass("open");
-  $(".post-form").trigger("reset");
-});
-
-$(".cancel-login").click(() => {
-  console.log("clicked here");
-  $(".modal-login").removeClass("open");
-  $(".login-form").trigger("reset");
-});
 $(".register").click(() => {
-  $(".modal-login").removeClass("open");
+  $(".modal").removeClass("open");
   $(".login-form").trigger("reset");
   $(".modal-create").addClass("open");
 });
+
 $(".left-drawer").click(function (event) {
   if ($(event.target).hasClass("left-drawer")) {
     $("#app").toggleClass("drawer-open");
   }
 });
+
 $("aside .add-post").click(() => {
   $(".modal-post").addClass("open");
 });
+
 $("aside .login").click(() => {
   $(".modal-login").addClass("open");
 });
