@@ -25,7 +25,7 @@
       <aside class="left-drawer">
         <button class="action logIn">
           <i class="material-icons">login</i>
-          <span class="action-text">Login / Register</span></button
+          <span class="action-text">Login / Create Account</span></button
         ><button class="action add-Post">
           <i class="material-icons">add_circle</i>
           <span class="action-text">Create New Post</span>
@@ -46,7 +46,7 @@
           <div class="content current-posts"></div>
         </section>
       </main>
-      <div class="modal">
+      <div class="modal modal-post">
         <div class="content">
           <h3>Create New Post</h3>
           <form class="post-form" action="#" method="">
@@ -108,23 +108,65 @@
           </form>
         </div>
       </div>
-      <div class="modal2">
+      <div class="modal modal-login">
         <div class="content">
-          <h3>Login / Register</h3>
+          <h3>Login</h3>
           <form class="login-form" action="#" method="">
+            <label for="login-name">Username:</label>
+            <input type="text" required />
+            <h5>This is a required field</h5>
+            <label for="password">Password:</label>
+            <input type="password" required />
+            <h5>This is a required field</h5>
             <div class="actions">
+              <button class="action register">Create Account</button>
+
               <button class="action create-post when-valid">
-                <i class="material-icons">add_circle</i>
-                <span class="action-text">Create</span>
+                <i class="material-icons">login</i>
+                <span class="action-text">Login</span>
               </button>
               <button disabled class="action create-post when-invalid">
-                <i class="material-icons">add_circle</i>
-                <span class="action-text">Create</span>
+                <i class="material-icons">login</i>
+                <span class="action-text">Login</span>
               </button>
-              <button class="action cancel-create-post">
+              <button class="action cancel-login">
                 <i class="material-icons">cancel</i>
                 <span class="action-text">Cancel</span>
               </button>
+              <footer></footer>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal modal-create">
+        <div class="content">
+          <h3>Create Account</h3>
+          <form class="create-form" action="#" method="">
+            <label for="create-name">Username:</label>
+            <input type="text" required />
+            <h5>This is a required field</h5>
+            <label for="create-password">Password:</label>
+            <input type="create-password" required />
+            <h5>This is a required field</h5>
+            <label for="confirm-password">Password:</label>
+            <input type="confirm-password" required />
+            <h5>This is a required field</h5>
+            <div class="actions">
+              <button class="action register">Create Account</button>
+
+              <button class="action create-post when-valid">
+                <i class="material-icons">login</i>
+                <span class="action-text">Login</span>
+              </button>
+              <button disabled class="action create-post when-invalid">
+                <i class="material-icons">login</i>
+                <span class="action-text">Login</span>
+              </button>
+              <button class="action cancel-login">
+                <i class="material-icons">cancel</i>
+                <span class="action-text">Cancel</span>
+              </button>
+              <footer></footer>
             </div>
           </form>
         </div>

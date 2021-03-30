@@ -125,17 +125,26 @@ $(".create-post").click(async (event) => {
   $(".modal").removeClass("open");
 });
 
-$(".cancel-create-post").click(() => $(".modal").removeClass("open"));
+$(".cancel-create-post").click(() => {
+  $(".modal-post").removeClass("open");
+  $(".post-form").trigger("reset");
+});
+
+$(".cancel-login").click(() => {
+  console.log("clicked here");
+  $(".modal-login").removeClass("open");
+  $(".login-form").trigger("reset");
+});
 
 $(".left-drawer").click(function (event) {
   if ($(event.target).hasClass("left-drawer")) {
     $("#app").toggleClass("drawer-open");
   }
 });
-$(".add-post").click(() => {
-  $(".modal").addClass("open");
+$("aside .add-post").click(() => {
+  $(".modal-post").addClass("open");
 });
-$(".login").click(() => {
-  $(".modal2").addClass("open");
+$("aside .login").click(() => {
+  $(".modal-login").addClass("open");
 });
 $(".my-account").click(() => {});
