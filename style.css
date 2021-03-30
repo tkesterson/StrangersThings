@@ -202,11 +202,13 @@ main {
   align-self: center;
 }
 
-.modal:not(.open) {
+.modal:not(.open),
+.modal2:not(.open) {
   display: none;
 }
 
-.modal.open {
+.modal.open,
+.modal2.open {
   position: absolute;
   top: 0;
   left: 0;
@@ -220,7 +222,8 @@ main {
   backdrop-filter: blur(6px);
 }
 
-.modal .content {
+.modal .content,
+.modal2 .content {
   font-family: "Noto Sans", sans-serif;
   width: 480px;
   padding: 12px;
@@ -229,69 +232,80 @@ main {
   box-shadow: 0 2px 12px -8px black;
 }
 
-.modal h3 {
+.modal h3,
+.modal2 h3 {
   font-size: 24px;
   margin-bottom: 6px;
   padding-bottom: 6px;
   border-bottom: 1px solid #888;
 }
 
-.modal form {
+.modal form,
+.modal2 form {
   display: flex;
   flex-direction: column;
 }
 
-.modal label {
+.modal label,
+.modal2 label {
   margin: 12px 0 4px;
 }
 
 .modal input,
-.modal textarea {
+.modal2 input .modal textarea {
   background: #ddd;
   padding: 8px;
   font-size: 22px;
   resize: none;
 }
 
-.modal .actions {
+.modal .actions,
+.modal2 .actions {
   margin-top: 12px;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
 }
 
-.modal .action {
+.modal .action,
+.modal2 .action {
   border-radius: 6px;
   box-shadow: 0 2px 6px -2px black;
   cursor: pointer;
 }
 
-.modal .action.when-invalid {
+.modal .action.when-invalid,
+.modal2 .action.when-invalid {
   background: #777;
 }
 
-.modal .action:not(.when-invalid):hover {
+.modal .action:not(.when-invalid):hover,
+.modal2 .action:not(.when-invalid):hover {
   background: #33f;
 }
 
-.modal .action:not(:first-of-type) {
+.modal .action:not(:first-of-type),
+.modal2 .action:not(:first-of-type) {
   margin-left: 12px;
 }
 
-.modal .action span {
+.modal .action span,
+.modal2 .action span {
   margin-left: 6px;
   font-weight: bold;
   letter-spacing: 1.1;
   text-transform: uppercase;
 }
 
-.modal input:invalid:required {
+.modal input:invalid:required,
+.modal2 input:invalid:required {
   border-bottom: 3px solid red;
 }
 .modal textarea:invalid:required {
   border-bottom: 3px solid red;
 }
-.modal input:valid:required + h5 {
+.modal input:valid:required + h5,
+.modal2 input:valid:required + h5 {
   display: none;
 }
 .modal textarea:valid:required + h5 {
@@ -300,8 +314,14 @@ main {
 .post-form:invalid .when-valid {
   display: none;
 }
+.login-form:invalid .when-valid {
+  display: none;
+}
 
 .post-form:valid .when-invalid {
+  display: none;
+}
+.login-form:valid .when-invalid {
   display: none;
 }
 /* Customize the label (the container) */

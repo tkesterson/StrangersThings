@@ -52,6 +52,7 @@ async function readPosts() {
 }
 
 async function createPost(postObj) {
+  console.log(postObj);
   try {
     const url = `${BASE_URL}/posts`;
     const response = await fetch(url, {
@@ -60,18 +61,9 @@ async function createPost(postObj) {
         "Content-Type": "application/json",
         //   'Authorization': 'Bearer TOKEN_STRING_HERE'
       },
-      body: JSON.stringify(
-        postObj
-        // {
-        // post: {
-        //   title: "My favorite stuffed animal",
-        //   description:
-        //     "This is a pooh doll from 1973. It has been carefully taken care of since I first got it.",
-        //   price: "$480.00",
-        //   willDeliver: true,
-        // }}
-      ),
+      body: JSON.stringify(postObj),
     });
+    console.log(postObj);
   } catch (error) {
     throw error;
   }
@@ -119,18 +111,18 @@ $(".post-list").on("click", ".delete", async function () {
 });
 $(".create-post").click(async (event) => {
   event.preventDefault();
-  $(".todo-form").trigger("reset");
-  $(".modal").removeClass("open");
+
   const postObj = {
     title: $("#post-title").val(),
-    body: $("#post-body").val(),
+    description: $("#post-body").val(),
+    price: $("#post-price").val(),
+    obo: oboBox.checked,
+    location: $("#post-location").val(),
+    willDeliver: deliveryBox.checked,
   };
-  try {
-    const newPost = await createPost(postObj);
-  } catch (error) {
-    throw error;
-  }
-  console.log(postObj);
+  createPost(postObj);
+  $(".post-form").trigger("reset");
+  $(".modal").removeClass("open");
 });
 
 $(".cancel-create-post").click(() => $(".modal").removeClass("open"));
@@ -143,3 +135,7 @@ $(".left-drawer").click(function (event) {
 $(".add-post").click(() => {
   $(".modal").addClass("open");
 });
+$(".login").click(() => {
+  $(".modal2").addClass("open");
+});
+$(".my-account").click(() => {});
