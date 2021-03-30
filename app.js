@@ -15,8 +15,9 @@ async function populatePosts() {
 }
 const renderPosts = (post) => {
   let { title, price, description, location, willDeliver } = post;
-  if (location === "[On Request]") location = "Location available on request.";
-  const newPrice = price.includes("$");
+  if (location === "[On Request]" || location === "")
+    location = "Location available on request.";
+  if (price.match(/^[0-9]+$/)) price = `$${price}`;
 
   return $(`
 <div class="post">
@@ -25,7 +26,7 @@ const renderPosts = (post) => {
   ${title}
 </span>
 <span class="price">
-    ${newPrice ? price : `$${price}`}
+    ${price}
   </span>
  </h3>
   <pre>${description}</pre>
@@ -109,7 +110,7 @@ $(".post-list").on("click", ".delete", async function () {
     throw error;
   }
 });
-$(".create-post").click(async (event) => {
+$(".create-post").click((event) => {
   event.preventDefault();
 
   const postObj = {
@@ -135,7 +136,11 @@ $(".cancel-login").click(() => {
   $(".modal-login").removeClass("open");
   $(".login-form").trigger("reset");
 });
-
+$(".register").click(() => {
+  $(".modal-login").removeClass("open");
+  $(".login-form").trigger("reset");
+  $(".modal-create").addClass("open");
+});
 $(".left-drawer").click(function (event) {
   if ($(event.target).hasClass("left-drawer")) {
     $("#app").toggleClass("drawer-open");
@@ -147,4 +152,5 @@ $("aside .add-post").click(() => {
 $("aside .login").click(() => {
   $(".modal-login").addClass("open");
 });
+
 $(".my-account").click(() => {});

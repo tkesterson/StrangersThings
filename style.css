@@ -297,19 +297,13 @@ main {
 .modal textarea:valid:required + h5 {
   display: none;
 }
-.post-form:invalid .when-valid {
+form:invalid .when-valid {
   display: none;
 }
-.login-form:invalid .when-valid {
+form:valid .when-invalid {
   display: none;
 }
 
-.post-form:valid .when-invalid {
-  display: none;
-}
-.login-form:valid .when-invalid {
-  display: none;
-}
 /* Customize the label (the container) */
 .container {
   display: block;

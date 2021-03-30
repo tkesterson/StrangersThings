@@ -1,5 +1,18 @@
 <html>
   <head>
+    <!-- ****** faviconit.com favicons ****** -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" sizes="16x16 32x32 64x64" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="196x196" href="/favicon-192.png" />
+    <link rel="icon" type="image/png" sizes="160x160" href="/favicon-160.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <meta name="msapplication-TileColor" content="#FFFFFF" />
+    <meta name="msapplication-TileImage" content="/favicon-144.png" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+    <!-- ****** faviconit.com favicons ****** -->
     <!-- fonts -->
     <link
       href="https://fonts.googleapis.com/css?family=Material+Icons|Tomorrow|Noto+Sans&display=swap"
@@ -100,7 +113,7 @@
                 <i class="material-icons">add_circle</i>
                 <span class="action-text">Create</span>
               </button>
-              <button class="action cancel-create-post">
+              <button type="button" class="action cancel-create-post">
                 <i class="material-icons">cancel</i>
                 <span class="action-text">Cancel</span>
               </button>
@@ -119,7 +132,9 @@
             <input type="password" required />
             <h5>This is a required field</h5>
             <div class="actions">
-              <button class="action register">Create Account</button>
+              <button type="button" class="action register">
+                Create Account
+              </button>
 
               <button class="action create-post when-valid">
                 <i class="material-icons">login</i>
@@ -129,7 +144,7 @@
                 <i class="material-icons">login</i>
                 <span class="action-text">Login</span>
               </button>
-              <button class="action cancel-login">
+              <button type="button" class="action cancel-login">
                 <i class="material-icons">cancel</i>
                 <span class="action-text">Cancel</span>
               </button>
@@ -144,25 +159,25 @@
           <form class="create-form" action="#" method="">
             <label for="create-name">Username:</label>
             <input type="text" required />
+            <label for="create-email">Email:</label>
+            <input type="email" required />
             <h5>This is a required field</h5>
             <label for="create-password">Password:</label>
-            <input type="create-password" required />
+            <input type="password" required />
             <h5>This is a required field</h5>
-            <label for="confirm-password">Password:</label>
-            <input type="confirm-password" required />
+            <label for="confirm-password">Confirm Password:</label>
+            <input type="password" required />
             <h5>This is a required field</h5>
             <div class="actions">
-              <button class="action register">Create Account</button>
-
-              <button class="action create-post when-valid">
+              <button class="action create-account when-valid">
                 <i class="material-icons">login</i>
                 <span class="action-text">Login</span>
               </button>
-              <button disabled class="action create-post when-invalid">
+              <button disabled class="action create-account when-invalid">
                 <i class="material-icons">login</i>
                 <span class="action-text">Login</span>
               </button>
-              <button class="action cancel-login">
+              <button type="button" class="action cancel-create-account">
                 <i class="material-icons">cancel</i>
                 <span class="action-text">Cancel</span>
               </button>
