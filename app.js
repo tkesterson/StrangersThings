@@ -1,15 +1,15 @@
 const BASE_URL =
   "https://strangers-things.herokuapp.com/api/2101-vpi-rm-web-pt";
-let loggedIn;
 
 let updateUi = () => {
-  if (loggedIn) {
+  const token = localStorage.getItem("token");
+  if (token) {
     $("button.action.login").addClass("hidden");
     $("button.action.add-Post").removeClass("hidden");
     $("button.action.my-account").removeClass("hidden");
     $("button.action.logout").removeClass("hidden");
   }
-  if (!loggedIn) {
+  if (!token) {
     $("button.action.login").removeClass("hidden");
     $("button.action.add-Post").addClass("hidden");
     $("button.action.my-account").addClass("hidden");
@@ -22,7 +22,7 @@ async function populatePosts() {
     const { data } = await readPosts();
     const { posts } = data;
     const postListElement = $(".current-posts");
-    console.log(posts);
+    postListElement.empty();
     posts.forEach((post) => {
       postListElement.append(renderPosts(post));
     });
@@ -35,7 +35,9 @@ const renderPosts = (post) => {
   if (location === "[On Request]" || location === "")
     location = "Location available on request.";
   if (price.match(/^[0-9]+$/)) price = `$${price}`;
-
+  let userPost = null;
+  const id = localStorage.getItem("id");
+  if (id === post.author._id) userPost = true;
   return $(`
 <div class="post">
 <h3>
@@ -43,16 +45,22 @@ const renderPosts = (post) => {
   ${title}
 </span>
 <span class="price">
-    ${price}
+    ${price}<p>${post.author.username}</p>
+    
   </span>
  </h3>
   <pre>${description}</pre>
   <footer class="actions">
 <span class="loc">${location}</span>
 <span class="delivery">Delivery Available:${willDeliver ? "✅" : "❌"}</span>
-    <button class="action edit">EDIT</button>
-    <button class="action delete">DELETE</button>
-  </footer>
+${
+  userPost
+    ? `<button class="action edit">EDIT</button>
+    <button class="action delete">DELETE</button>`
+    : ""
+}
+
+    </footer>
   
 </div>
 `).data("post", post);
@@ -73,15 +81,18 @@ async function createPost(postObj) {
   console.log(postObj);
   try {
     const url = `${BASE_URL}/posts`;
+    const token = localStorage.getItem("token");
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        //   'Authorization': 'Bearer TOKEN_STRING_HERE'
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(postObj),
     });
-    console.log(postObj);
+    const newPost = await response.json();
+    console.log(newPost);
+    return newPost;
   } catch (error) {
     throw error;
   }
@@ -96,15 +107,17 @@ async function updatePost(postObj) {
 }
 async function deletePost(postId) {
   try {
-    const url = `${BASE_URL}/posts${postId}`;
+    const url = `${BASE_URL}/posts/${postId}`;
+    const token = localStorage.getItem("token");
     const response = await fetch(url, {
       method: "DELETE",
-      // headers: {
-      //   "Content-Type": "application/json",
-      //   Authorization: "Bearer TOKEN_STRING_HERE",
-      // },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
+    console.log(data);
     return data;
   } catch (error) {
     throw error;
@@ -139,6 +152,7 @@ const registerUser = async (userObj) => {
     if (!newUser.success) {
       localStorage.setItem("token", newUser.data.token);
       alert(newUser.data.message);
+      userId();
     }
 
     console.log(newUser);
@@ -163,15 +177,32 @@ const loginUser = async (userObj, username) => {
       localStorage.setItem("token", newUser.data.token);
       localStorage.setItem("userName", username);
       alert(newUser.data.message);
-      loggedIn = true;
+      userId();
     }
 
     console.log(newUser);
-    return newUser;
   } catch (error) {
     console.error(error);
   }
 };
+
+const userId = async () => {
+  try {
+    const url = `${BASE_URL}/users/me`;
+    const token = localStorage.getItem("token");
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const newId = await response.json();
+    localStorage.setItem("id", newId.data._id);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 populatePosts();
 updateUi();
 
@@ -201,18 +232,21 @@ $(".action.cancel").click(() => {
   $(".create-account").prop("disabled", true);
 });
 
-$(".create-post").click((event) => {
+$(".create-post").click(async (event) => {
   event.preventDefault();
   const postObj = {
-    title: $("#post-title").val(),
-    description: $("#post-body").val(),
-    price: $("#post-price").val(),
-    obo: oboBox.checked,
-    location: $("#post-location").val(),
-    willDeliver: deliveryBox.checked,
+    post: {
+      title: $("#post-title").val(),
+      description: $("#post-body").val(),
+      price: $("#post-price").val(),
+      obo: oboBox.checked,
+      location: $("#post-location").val(),
+      willDeliver: deliveryBox.checked,
+    },
   };
-  createPost(postObj);
+  await createPost(postObj);
   updateUi();
+  populatePosts();
   $(".post-form").trigger("reset");
   $(".modal").removeClass("open");
 });
@@ -222,14 +256,14 @@ $(".register").click(() => {
   $(".login-form").trigger("reset");
   $(".modal-create").addClass("open");
 });
-$(".create-account").click(() => {
+$(".create-account").click(async () => {
   const userObj = {
     user: {
       username: $("#create-name").val(),
       password: $("#create-password").val(),
     },
   };
-  registerUser(userObj);
+  await registerUser(userObj);
   updateUi();
   $(".create-form").trigger("reset");
   $(".modal").removeClass("open");
@@ -250,6 +284,7 @@ $(".login-account").click(async () => {
 
   $(".login-form").trigger("reset");
   $(".modal").removeClass("open");
+  populatePosts();
   updateUi();
 });
 
@@ -267,9 +302,10 @@ $("aside .login").click(() => {
   $(".modal-login").addClass("open");
 });
 $("aside .logout").click(() => {
-  loggedIn = false;
   localStorage.clear("token");
   localStorage.clear("userName");
+  localStorage.clear("id");
+  populatePosts();
   updateUi();
 });
 $(".my-account").click(() => {});
