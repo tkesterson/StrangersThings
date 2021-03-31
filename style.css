@@ -266,11 +266,12 @@ main {
   cursor: pointer;
 }
 
-.modal .action.when-invalid {
+.modal .action.when-invalid,
+button:disabled {
   background: #777;
 }
 
-.modal .action:not(.when-invalid):hover {
+.modal .action:not(button:disabled):hover {
   background: #33f;
 }
 
@@ -303,7 +304,9 @@ form:invalid .when-valid {
 form:valid .when-invalid {
   display: none;
 }
-
+.warning {
+  color: red;
+}
 /* Customize the label (the container) */
 .container {
   display: block;

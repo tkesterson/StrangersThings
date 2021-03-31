@@ -166,12 +166,11 @@
             <label for="confirm-password">Confirm Password:</label>
             <input type="password" id="confirm-password" required />
             <h5>This is a required field</h5>
+            <footer>
+              <h5 class="warning">Password fields do not match.</h5>
+            </footer>
             <div class="actions">
-              <button class="action create-account when-valid">
-                <i class="material-icons">account_circle</i>
-                <span class="action-text">Create Account</span>
-              </button>
-              <button disabled class="action create-account when-invalid">
+              <button disabled class="action create-account">
                 <i class="material-icons">account_circle</i>
                 <span class="action-text">Create Account</span>
               </button>
@@ -179,7 +178,6 @@
                 <i class="material-icons">cancel</i>
                 <span class="action-text">Cancel</span>
               </button>
-              <footer></footer>
             </div>
           </form>
         </div>

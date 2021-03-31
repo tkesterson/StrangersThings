@@ -93,6 +93,20 @@ async function deletePost(postId) {
     throw error;
   }
 }
+$(document).ready(function () {
+  $("#confirm-password").keyup(function () {
+    let text = $(this).val();
+    let text2 = $("#create-password").val();
+    if (text === text2) {
+      $(".create-account").prop("disabled", true);
+      $(".create-account").removeAttr("disabled");
+      $(".warning").css("display", "none");
+    } else {
+      $(".create-account").prop("disabled", true);
+      $(".warning").css("display", "block");
+    }
+  });
+});
 
 populatePosts();
 
@@ -119,6 +133,7 @@ $(".action.cancel").click(() => {
   $(".post-form").trigger("reset");
   $(".login-form").trigger("reset");
   $(".create-form").trigger("reset");
+  $(".create-account").prop("disabled", true);
 });
 
 $(".create-post").click((event) => {
@@ -141,7 +156,14 @@ $(".register").click(() => {
   $(".login-form").trigger("reset");
   $(".modal-create").addClass("open");
 });
-
+$(".create-account").click(() => {
+  const userObj = {
+    user: {
+      username: $("#create-name").val(),
+      password: $("#create-password").val(),
+    },
+  };
+});
 $(".left-drawer").click(function (event) {
   if ($(event.target).hasClass("left-drawer")) {
     $("#app").toggleClass("drawer-open");
