@@ -307,6 +307,9 @@ form:valid .when-invalid {
 .warning {
   color: red;
 }
+button.hidden {
+  display: none;
+}
 /* Customize the label (the container) */
 .container {
   display: block;

@@ -1,5 +1,22 @@
 const BASE_URL =
   "https://strangers-things.herokuapp.com/api/2101-vpi-rm-web-pt";
+let loggedIn;
+
+let updateUi = () => {
+  if (loggedIn) {
+    $("button.action.login").addClass("hidden");
+    $("button.action.add-Post").removeClass("hidden");
+    $("button.action.my-account").removeClass("hidden");
+    $("button.action.logout").removeClass("hidden");
+  }
+  if (!loggedIn) {
+    $("button.action.login").removeClass("hidden");
+    $("button.action.add-Post").addClass("hidden");
+    $("button.action.my-account").addClass("hidden");
+    $("button.action.logout").addClass("hidden");
+  }
+};
+
 async function populatePosts() {
   try {
     const { data } = await readPosts();
@@ -107,8 +124,56 @@ $(document).ready(function () {
     }
   });
 });
+const registerUser = async (userObj) => {
+  try {
+    const url = `${BASE_URL}/users/register`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userObj),
+    });
+    const newUser = await response.json();
+    if (!newUser.success) alert(newUser.error.message);
+    if (!newUser.success) {
+      localStorage.setItem("token", newUser.data.token);
+      alert(newUser.data.message);
+    }
 
+    console.log(newUser);
+    return newUser;
+  } catch (error) {
+    throw error;
+  }
+};
+const loginUser = async (userObj, username) => {
+  try {
+    const url = `${BASE_URL}/users/login`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userObj),
+    });
+    const newUser = await response.json();
+    if (!newUser.success) alert(newUser.error.message);
+    if (newUser.success) {
+      localStorage.setItem("token", newUser.data.token);
+      localStorage.setItem("userName", username);
+      alert(newUser.data.message);
+      loggedIn = true;
+    }
+
+    console.log(newUser);
+    return newUser;
+  } catch (error) {
+    console.error(error);
+  }
+};
 populatePosts();
+updateUi();
 
 $(".post-list").on("click", ".edit", async function () {
   const postElement = $(this).closest(".post");
@@ -147,6 +212,7 @@ $(".create-post").click((event) => {
     willDeliver: deliveryBox.checked,
   };
   createPost(postObj);
+  updateUi();
   $(".post-form").trigger("reset");
   $(".modal").removeClass("open");
 });
@@ -163,7 +229,30 @@ $(".create-account").click(() => {
       password: $("#create-password").val(),
     },
   };
+  registerUser(userObj);
+  updateUi();
+  $(".create-form").trigger("reset");
+  $(".modal").removeClass("open");
 });
+
+$(".login-account").click(async () => {
+  const username = $("#login-name").val();
+
+  const password = $("#login-password").val();
+
+  const userObj = {
+    user: {
+      username,
+      password,
+    },
+  };
+  await loginUser(userObj, username);
+
+  $(".login-form").trigger("reset");
+  $(".modal").removeClass("open");
+  updateUi();
+});
+
 $(".left-drawer").click(function (event) {
   if ($(event.target).hasClass("left-drawer")) {
     $("#app").toggleClass("drawer-open");
@@ -177,5 +266,10 @@ $("aside .add-post").click(() => {
 $("aside .login").click(() => {
   $(".modal-login").addClass("open");
 });
-
+$("aside .logout").click(() => {
+  loggedIn = false;
+  localStorage.clear("token");
+  localStorage.clear("userName");
+  updateUi();
+});
 $(".my-account").click(() => {});
