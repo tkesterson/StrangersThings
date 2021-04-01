@@ -310,6 +310,9 @@ form:valid .when-invalid {
 button.hidden {
   display: none;
 }
+button.action.message {
+  grid-column: 3/5;
+}
 /* Customize the label (the container) */
 .container {
   display: block;

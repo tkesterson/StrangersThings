@@ -16,7 +16,16 @@ let updateUi = () => {
     $("button.action.logout").addClass("hidden");
   }
 };
-
+async function readPosts() {
+  try {
+    const url = `${BASE_URL}/posts`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
 async function populatePosts() {
   try {
     const { data } = await readPosts();
@@ -30,14 +39,16 @@ async function populatePosts() {
     console.error(error);
   }
 }
-const renderPosts = (post) => {
+const renderPosts = (post, username, _id) => {
   let { title, price, description, location, willDeliver } = post;
   if (location === "[On Request]" || location === "")
     location = "Location available on request.";
   if (price.match(/^[0-9]+$/)) price = `$${price}`;
+  const displayName = username ? username : post.author.username;
   let userPost = null;
   const id = localStorage.getItem("id");
   if (id === post.author._id) userPost = true;
+  if (id === _id) userPost = true;
   return $(`
 <div class="post">
 <h3>
@@ -45,7 +56,7 @@ const renderPosts = (post) => {
   ${title}
 </span>
 <span class="price">
-    ${price}<p>${post.author.username}</p>
+    ${price}<p>${displayName}</p>
     
   </span>
  </h3>
@@ -57,7 +68,7 @@ ${
   userPost
     ? `<button class="action edit">EDIT</button>
     <button class="action delete">DELETE</button>`
-    : ""
+    : `<button class="action message">MESSAGE SELLER</button>`
 }
 
     </footer>
@@ -65,17 +76,6 @@ ${
 </div>
 `).data("post", post);
 };
-
-async function readPosts() {
-  try {
-    const url = `${BASE_URL}/posts`;
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    throw error;
-  }
-}
 
 async function createPost(postObj) {
   console.log(postObj);
@@ -177,10 +177,9 @@ const loginUser = async (userObj, username) => {
       localStorage.setItem("token", newUser.data.token);
       localStorage.setItem("userName", username);
       alert(newUser.data.message);
+      populatePosts();
       userId();
     }
-
-    console.log(newUser);
   } catch (error) {
     console.error(error);
   }
@@ -198,6 +197,31 @@ const userId = async () => {
     });
     const newId = await response.json();
     localStorage.setItem("id", newId.data._id);
+  } catch (error) {
+    console.error(error);
+  }
+};
+const userPage = async () => {
+  try {
+    const url = `${BASE_URL}/users/me`;
+    const token = localStorage.getItem("token");
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const userPage = await response.json();
+    console.log(userPage);
+    const posts = userPage.data.posts;
+    const username = userPage.data.username;
+    const _id = userPage.data._id;
+    console.log(username);
+    const postListElement = $(".current-posts");
+    postListElement.empty();
+    posts.forEach((post) => {
+      if (post.active) postListElement.append(renderPosts(post, username, _id));
+    });
   } catch (error) {
     console.error(error);
   }
@@ -239,11 +263,11 @@ $(".create-post").click(async (event) => {
       title: $("#post-title").val(),
       description: $("#post-body").val(),
       price: $("#post-price").val(),
-      obo: oboBox.checked,
       location: $("#post-location").val(),
       willDeliver: deliveryBox.checked,
     },
   };
+  if (oboBox.checked) postObj.post.price = `${postObj.post.price}, OBO`;
   await createPost(postObj);
   updateUi();
   populatePosts();
@@ -308,4 +332,6 @@ $("aside .logout").click(() => {
   populatePosts();
   updateUi();
 });
-$(".my-account").click(() => {});
+$(".my-account").click(() => {
+  userPage();
+});
