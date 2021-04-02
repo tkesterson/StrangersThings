@@ -1,6 +1,6 @@
 const BASE_URL =
   "https://strangers-things.herokuapp.com/api/2101-vpi-rm-web-pt";
-
+const state = { posts: [], matches: [] };
 let updateUi = () => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -16,23 +16,23 @@ let updateUi = () => {
     $("button.action.logout").addClass("hidden");
   }
 };
-async function readPosts() {
+async function fetchPosts() {
   try {
     const url = `${BASE_URL}/posts`;
     const response = await fetch(url);
-    const data = await response.json();
-    return data;
+    return response.json();
   } catch (error) {
     throw error;
   }
 }
 async function populatePosts() {
   try {
-    const { data } = await readPosts();
+    const { data } = await fetchPosts();
     const { posts } = data;
+    state.posts = posts;
     const postListElement = $(".current-posts");
     postListElement.empty();
-    posts.forEach((post) => {
+    state.posts.forEach((post) => {
       postListElement.append(renderPosts(post));
     });
   } catch (error) {
@@ -123,6 +123,24 @@ async function deletePost(postId) {
     throw error;
   }
 }
+
+const sendMessage = async (messageObj, postId) => {
+  try {
+    const url = `${BASE_URL}/posts/${postId}/messages`;
+    const token = localStorage.getItem("token");
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(messageObj),
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
 $(document).ready(function () {
   $("#confirm-password").keyup(function () {
     let text = $(this).val();
@@ -226,7 +244,37 @@ const userPage = async () => {
     console.error(error);
   }
 };
+const makePosts = (postObj) => {
+  const postListElement = $(".current-posts");
+  postListElement.empty();
+  postObj.forEach((post) => {
+    postListElement.append(renderPosts(post));
+  });
+};
 
+$(document).ready(function () {
+  $("#searchBox").keyup(function () {
+    searchValue = $("#searchBox").val();
+    if (!searchValue) {
+      populatePosts();
+      return;
+    }
+    const searchTerms = searchValue.toLowerCase().split(" ");
+    console.log(state.posts);
+    const matches = state.posts.filter((postObj) => {
+      console.log(postObj.title);
+      const titleWords = postObj.title.toLowerCase().split(" ");
+      console.log(titleWords);
+      const isMatch = titleWords.some((word) => {
+        return searchTerms.some((searchTerm) => searchTerm === word);
+      });
+
+      return isMatch;
+    });
+
+    makePosts(matches);
+  });
+});
 populatePosts();
 updateUi();
 
@@ -243,6 +291,18 @@ $(".post-list").on("click", ".delete", async function () {
   try {
     result = await deletePost(post._id);
     postElement.slideUp();
+  } catch (error) {
+    throw error;
+  }
+});
+
+$(".post-list").on("click", ".message", async function () {
+  const postElement = $(this).closest(".post");
+  const post = postElement.data("post");
+  console.log(post._id);
+  try {
+    result = await deletePost(post._id);
+    console.log(result);
   } catch (error) {
     throw error;
   }
@@ -335,3 +395,4 @@ $("aside .logout").click(() => {
 $(".my-account").click(() => {
   userPage();
 });
+$(".action.search").click(() => $(".searchField").toggleClass("hidden"));

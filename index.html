@@ -32,7 +32,22 @@
   <body>
     <div id="app">
       <header>
-        <span>Stranger's Things</span>
+        <div class="title">
+          <span>Stranger's Things</span>
+          <span
+            ><button type="button" class="action search">
+              <i class="material-icons">search</i>
+            </button></span
+          >
+        </div>
+        <span class="searchField hidden">
+          <input
+            type="search"
+            id="searchBox"
+            placeholder="Search.."
+            autofocus
+          />
+        </span>
       </header>
       <aside class="left-drawer">
         <button type="button" class="action logIn">
@@ -55,6 +70,7 @@
       <main>
         <section id="post-list" class="post-list">
           <h3 class="list-title">Current Posts</h3>
+
           <div class="content current-posts"></div>
         </section>
       </main>
