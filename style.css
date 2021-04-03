@@ -115,10 +115,6 @@ button.action {
   width: 284px;
 }
 
-/* .drawer-open .left-drawer .action i {
-    
-  } */
-
 .drawer-open .left-drawer .action-text {
   display: block;
 }
@@ -179,7 +175,10 @@ main {
   display: flex;
   flex-direction: column;
 }
-
+.post p {
+  font-size: 1.2em;
+  font-weight: bold;
+}
 .post h3 .title {
   font-size: 1em;
   color: #111;
@@ -187,6 +186,15 @@ main {
 .post h3 .price {
   font-size: 0.7em;
   color: #777;
+}
+.post p {
+  align-content: space-around;
+}
+.post a {
+  color: #777;
+}
+.post a:hover {
+  color: #111;
 }
 .post pre {
   font-family: sans-serif;

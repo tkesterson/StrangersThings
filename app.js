@@ -30,11 +30,8 @@ async function populatePosts() {
     const { data } = await fetchPosts();
     const { posts } = data;
     state.posts = posts;
-    const postListElement = $(".current-posts");
-    postListElement.empty();
-    state.posts.forEach((post) => {
-      postListElement.append(renderPosts(post));
-    });
+
+    makePosts(state.posts);
   } catch (error) {
     console.error(error);
   }
@@ -56,8 +53,8 @@ const renderPosts = (post, username, _id) => {
   ${title}
 </span>
 <span class="price">
-    ${price}<p>${displayName}</p>
-    
+    ${price}
+    <p class='post-author'><a class="displayName" href="#">${displayName}</a></p>
   </span>
  </h3>
   <pre>${description}</pre>
@@ -260,15 +257,27 @@ $(document).ready(function () {
       return;
     }
     const searchTerms = searchValue.toLowerCase().split(" ");
-    console.log(state.posts);
+
     const matches = state.posts.filter((postObj) => {
-      console.log(postObj.title);
       const titleWords = postObj.title.toLowerCase().split(" ");
-      console.log(titleWords);
-      const isMatch = titleWords.some((word) => {
+      const bodyWords = postObj.description.toLowerCase().split(" ");
+      const priceWords = postObj.price.toLowerCase().split(" ");
+      const authorWords = postObj.author.username.toLowerCase().split(" ");
+
+      const titleMatch = titleWords.some((word) => {
+        return searchTerms.some((searchTerm) => searchTerm === word);
+      });
+      const bodyMatch = bodyWords.some((word) => {
+        return searchTerms.some((searchTerm) => searchTerm === word);
+      });
+      const priceMatch = priceWords.some((word) => {
+        return searchTerms.some((searchTerm) => searchTerm === word);
+      });
+      const authorMatch = authorWords.some((word) => {
         return searchTerms.some((searchTerm) => searchTerm === word);
       });
 
+      const isMatch = titleMatch + bodyMatch + priceMatch + authorMatch;
       return isMatch;
     });
 
@@ -277,12 +286,24 @@ $(document).ready(function () {
 });
 populatePosts();
 updateUi();
-
+$("input[type=search]").on("search", function () {
+  populatePosts();
+});
 $(".post-list").on("click", ".edit", async function () {
   const postElement = $(this).closest(".post");
   const post = postElement.data("post");
   console.log(post);
 });
+
+$(".post-list").on("click", ".post-author", function () {
+  const postElement = $(this).closest(".post");
+  const post = postElement.data("post");
+  const author = post.author.username;
+  $("#searchBox").val(author);
+  $("#searchBox").keyup();
+  $(".searchField").removeClass("hidden");
+});
+$(".displayName a").click((event) => event.preventDefault());
 
 $(".post-list").on("click", ".delete", async function () {
   const postElement = $(this).closest(".post");
