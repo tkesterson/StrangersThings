@@ -19,7 +19,15 @@ let updateUi = () => {
 async function fetchPosts() {
   try {
     const url = `${BASE_URL}/posts`;
-    const response = await fetch(url);
+    const token = localStorage.getItem("token");
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
     return response.json();
   } catch (error) {
     throw error;
@@ -35,6 +43,7 @@ async function populatePosts() {
   } catch (error) {
     console.error(error);
   }
+  console.log(state.posts);
 }
 const renderPosts = (post, username, _id) => {
   let { title, price, description, location, willDeliver } = post;
@@ -73,7 +82,18 @@ ${
 </div>
 `).data("post", post);
 };
-
+const renderMessages = (messageObj) => {
+  console.log(messageObj);
+  const { content, fromUser } = messageObj;
+  return `<div class="post">
+<h3>
+<span class="title">
+  Message from: ${fromUser.username}
+</span>
+  <pre>${content}</pre>
+  
+</div>`;
+};
 async function createPost(postObj) {
   console.log(postObj);
   try {
@@ -125,22 +145,25 @@ const sendMessage = async (messageObj, postId) => {
   try {
     const url = `${BASE_URL}/posts/${postId}/messages`;
     const token = localStorage.getItem("token");
+    console.log(messageObj);
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+
       body: JSON.stringify(messageObj),
     });
+    console.log(response);
   } catch (error) {
     throw error;
   }
 };
 
 $(document).ready(function () {
-  $("#confirm-password").keyup(function () {
-    let text = $(this).val();
+  $("#confirm-password, #create-password").keyup(function () {
+    let text = $("#confirm-password").val();
     let text2 = $("#create-password").val();
     if (text === text2) {
       $(".create-account").prop("disabled", true);
@@ -226,16 +249,23 @@ const userPage = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
+
     const userPage = await response.json();
     console.log(userPage);
     const posts = userPage.data.posts;
     const username = userPage.data.username;
     const _id = userPage.data._id;
-    console.log(username);
     const postListElement = $(".current-posts");
     postListElement.empty();
+
     posts.forEach((post) => {
-      if (post.active) postListElement.append(renderPosts(post, username, _id));
+      if (post.active) {
+        console.log(post);
+        postListElement.append(renderPosts(post, username, _id));
+        post.messages.forEach((message) =>
+          postListElement.append(renderMessages(message))
+        );
+      }
     });
   } catch (error) {
     console.error(error);
@@ -259,22 +289,22 @@ $(document).ready(function () {
     const searchTerms = searchValue.toLowerCase().split(" ");
 
     const matches = state.posts.filter((postObj) => {
-      const titleWords = postObj.title.toLowerCase().split(" ");
-      const bodyWords = postObj.description.toLowerCase().split(" ");
-      const priceWords = postObj.price.toLowerCase().split(" ");
-      const authorWords = postObj.author.username.toLowerCase().split(" ");
+      const titleWords = postObj.title.toLowerCase();
+      const bodyWords = postObj.description.toLowerCase();
+      const priceWords = postObj.price.toLowerCase();
+      const authorWords = postObj.author.username.toLowerCase();
 
-      const titleMatch = titleWords.some((word) => {
-        return searchTerms.some((searchTerm) => searchTerm === word);
+      const titleMatch = searchTerms.some((searchTerm) => {
+        return titleWords.includes(searchTerm);
       });
-      const bodyMatch = bodyWords.some((word) => {
-        return searchTerms.some((searchTerm) => searchTerm === word);
+      const bodyMatch = searchTerms.some((searchTerm) => {
+        return bodyWords.includes(searchTerm);
       });
-      const priceMatch = priceWords.some((word) => {
-        return searchTerms.some((searchTerm) => searchTerm === word);
+      const priceMatch = searchTerms.some((searchTerm) => {
+        return priceWords.includes(searchTerm);
       });
-      const authorMatch = authorWords.some((word) => {
-        return searchTerms.some((searchTerm) => searchTerm === word);
+      const authorMatch = searchTerms.some((searchTerm) => {
+        return authorWords.includes(searchTerm);
       });
 
       const isMatch = titleMatch + bodyMatch + priceMatch + authorMatch;
@@ -321,12 +351,9 @@ $(".post-list").on("click", ".message", async function () {
   const postElement = $(this).closest(".post");
   const post = postElement.data("post");
   console.log(post._id);
-  try {
-    result = await deletePost(post._id);
-    console.log(result);
-  } catch (error) {
-    throw error;
-  }
+  $(".seller").text(post.author.username);
+  $(".listing-title").text(post.title);
+  $(".modal-message").addClass("open").data("id", post._id);
 });
 
 $(".action.cancel").click(() => {
@@ -335,6 +362,7 @@ $(".action.cancel").click(() => {
   $(".login-form").trigger("reset");
   $(".create-form").trigger("reset");
   $(".create-account").prop("disabled", true);
+  $(".message-form").trigger("reset");
 });
 
 $(".create-post").click(async (event) => {
@@ -392,7 +420,21 @@ $(".login-account").click(async () => {
   populatePosts();
   updateUi();
 });
-
+$(".send-message").click(async () => {
+  const content = $("#message-body").val();
+  const id = $(".modal-message").data("id");
+  console.log(id);
+  const messageObj = {
+    message: {
+      content,
+    },
+  };
+  await sendMessage(messageObj, id);
+  $(".message-form").trigger("reset");
+  $(".modal").removeClass("open");
+  populatePosts();
+  updateUi();
+});
 $(".left-drawer").click(function (event) {
   if ($(event.target).hasClass("left-drawer")) {
     $("#app").toggleClass("drawer-open");

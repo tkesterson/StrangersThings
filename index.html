@@ -206,6 +206,42 @@
           </form>
         </div>
       </div>
+      <div class="modal modal-message">
+        <div class="content">
+          <h3>Send Message to: <span class="seller"></span></h3>
+          <h4>Post: <span class="listing-title"></Post:span></h4>
+          <form class="message-form" action="#" method="">
+            <label for="message-body">Message:</label>
+            <textarea
+            id="message-body" 
+            style="resize: none"
+            columns="30"
+            rows="4"
+            required></textarea>
+            <h5>This is a required field</h5>
+            
+            </footer>
+            <div class="actions">
+              <button type="button" class="action send-message when-valid">
+                <i class="material-icons">message</i>
+                <span class="action-text">Send</span>
+              </button>
+              <button
+                type="button"
+                disabled
+                class="action send-message when-invalid"
+              >
+                <i class="material-icons">message</i>
+                <span class="action-text">Send</span>
+              </button>
+              <button type="button" class="action cancel">
+                <i class="material-icons">cancel</i>
+                <span class="action-text">Cancel</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </body>
 </html>
