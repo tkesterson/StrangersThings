@@ -118,7 +118,6 @@ main {
   display: grid;
   grid-gap: 8px;
   grid-template-columns: 0.5fr 2fr 0.5fr;
-  overflow-x: scroll;
   overflow-y: hidden;
 }
 

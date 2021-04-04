@@ -1,7 +1,7 @@
 const BASE_URL =
   "https://strangers-things.herokuapp.com/api/2101-vpi-rm-web-pt";
 
-const state = { posts: [], matches: [] };
+const state = { posts: [], matches: [], page: true };
 
 let updateUi = () => {
   const token = localStorage.getItem("token");
@@ -10,12 +10,19 @@ let updateUi = () => {
     $("button.action.add-Post").removeClass("hidden");
     $("button.action.my-account").removeClass("hidden");
     $("button.action.logout").removeClass("hidden");
-  }
-  if (!token) {
+    if (state.page) {
+      $("button.action.all-posts").addClass("hidden");
+      $("button.action.my-account").removeClass("hidden");
+    } else {
+      $("button.action.all-posts").removeClass("hidden");
+      $("button.action.my-account").addClass("hidden");
+    }
+  } else {
     $("button.action.login").removeClass("hidden");
     $("button.action.add-Post").addClass("hidden");
     $("button.action.my-account").addClass("hidden");
     $("button.action.logout").addClass("hidden");
+    $("button.action.all-posts").addClass("hidden");
   }
 };
 
@@ -60,7 +67,7 @@ const renderPosts = (post, username, _id) => {
   if (id === post.author._id) userPost = true;
   if (id === _id) userPost = true;
   if (!id) loggedOut = true;
-  return $(`
+  let newDiv = $(`
 <div class="post">
   <h3>
     <span class="title">
@@ -93,6 +100,7 @@ const renderPosts = (post, username, _id) => {
   </footer>
 </div>
 `).data("post", post);
+  return newDiv;
 };
 
 const renderMessages = (messageObj) => {
@@ -122,16 +130,27 @@ async function createPost(postObj) {
       body: JSON.stringify(postObj),
     });
     const newPost = await response.json();
+    console.log(newPost);
     return newPost;
   } catch (error) {
     throw error;
   }
 }
 
-async function updatePost(postObj) {
+async function updatePost(postObj, postId) {
   try {
-    const url = `${BASE_URL}/posts`;
-    const response = await fetch(url);
+    const url = `${BASE_URL}/posts/${postId}`;
+    const token = localStorage.getItem("token");
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(postObj),
+    });
+    const data = await response.json();
+    return data;
   } catch (error) {
     throw error;
   }
@@ -279,9 +298,12 @@ const userPage = async () => {
 const makePosts = (postArr, username, id) => {
   const postListElement = $(".current-posts");
   postListElement.empty();
+  postListElement.html(`<span class="no-posts">No Current Posts.</span>`);
   postArr.forEach((post) => {
     if (post.active) {
+      $(".no-posts").addClass("hidden");
       postListElement.append(renderPosts(post, username, id));
+      debugger;
       post.messages.forEach((message) =>
         postListElement.append(renderMessages(message))
       );
@@ -324,9 +346,14 @@ $(document).ready(function () {
     makePosts(matches);
   });
 });
-const bootStrap = () => {
-  populatePosts();
-  updateUi();
+const bootStrap = async () => {
+  if (state.page) {
+    populatePosts();
+    updateUi();
+  } else {
+    userPage();
+    updateUi();
+  }
 };
 
 bootStrap();
@@ -339,6 +366,13 @@ $(".post-list").on("click", ".edit", async function () {
   const postElement = $(this).closest(".post");
   const post = postElement.data("post");
   console.log(post);
+  $(".modal-edit").addClass("open");
+  $("#edit-title").val(post.title);
+  $("#edit-body").val(post.description);
+  $("#edit-price").val(post.price);
+  $("#edit-location").val(post.location);
+  if (post.willDeliver) editDeliveryBox.checked = true;
+  $(".modal-edit").data("post-id", post._id);
 });
 
 $(".post-list").on("click", ".post-author", function () {
@@ -355,12 +389,15 @@ $(".displayName a").click((event) => event.preventDefault());
 $(".post-list").on("click", ".delete", async function () {
   const postElement = $(this).closest(".post");
   const post = postElement.data("post");
-  console.log(post._id);
-  try {
-    result = await deletePost(post._id);
-    postElement.slideUp();
-  } catch (error) {
-    throw error;
+  const postDelete = confirm("Delete Post?");
+
+  if (postDelete) {
+    try {
+      result = await deletePost(post._id);
+      postElement.slideUp();
+    } catch (error) {
+      throw error;
+    }
   }
 });
 
@@ -375,11 +412,8 @@ $(".post-list").on("click", ".message", async function () {
 
 $(".action.cancel").click(() => {
   $(".modal").removeClass("open");
-  $(".post-form").trigger("reset");
-  $(".login-form").trigger("reset");
-  $(".create-form").trigger("reset");
+  $(".form").trigger("reset");
   $(".create-account").prop("disabled", true);
-  $(".message-form").trigger("reset");
 });
 
 $(".create-post").click(async (event) => {
@@ -395,14 +429,33 @@ $(".create-post").click(async (event) => {
   };
   if (oboBox.checked) postObj.post.price = `${postObj.post.price}, OBO`;
   await createPost(postObj);
-  bootStrap();
-  $(".post-form").trigger("reset");
+  await bootStrap();
+
+  $(".form").trigger("reset");
   $(".modal").removeClass("open");
 });
 
+$(".edit-post").click(async (event) => {
+  event.preventDefault();
+  const postObj = {
+    post: {
+      title: $("#edit-title").val(),
+      description: $("#edit-body").val(),
+      price: $("#edit-price").val(),
+      location: $("#edit-location").val(),
+      willDeliver: editDeliveryBox.checked,
+    },
+  };
+  const postId = $(".modal-edit").data("post-id");
+  await updatePost(postObj, postId);
+  await bootStrap();
+
+  $(".form").trigger("reset");
+  $(".modal").removeClass("open");
+});
 $(".register").click(() => {
   $(".modal").removeClass("open");
-  $(".login-form").trigger("reset");
+  $(".form").trigger("reset");
   $(".modal-create").addClass("open");
 });
 
@@ -415,7 +468,7 @@ $(".create-account").click(async () => {
   };
   await registerUser(userObj);
   updateUi();
-  $(".create-form").trigger("reset");
+  $(".form").trigger("reset");
   $(".modal").removeClass("open");
 });
 
@@ -431,7 +484,7 @@ $(".login-account").click(async () => {
   };
 
   await loginUser(userObj, username);
-  $(".login-form").trigger("reset");
+  $(".form").trigger("reset");
   $(".modal").removeClass("open");
   bootStrap();
 });
@@ -473,7 +526,13 @@ $("aside .logout").click(() => {
 });
 
 $(".my-account").click(() => {
-  userPage();
+  state.page = false;
+  bootStrap();
+});
+
+$(".all-posts").click(() => {
+  state.page = true;
+  bootStrap();
 });
 
 $(".action.search").click(() => $(".searchField").toggleClass("hidden"));

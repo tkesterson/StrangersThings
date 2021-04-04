@@ -32,7 +32,6 @@
   <body>
     <div id="app">
       <header>
-        <a href=""></a>
         <div class="title">
           <span>Stranger's Things</span>
           <span
@@ -57,12 +56,13 @@
         ><button type="button" class="action add-Post">
           <i class="material-icons">add_circle</i>
           <span class="action-text">Create New Post</span>
-        </button>
-        <button type="button" class="action my-account">
+        </button><button type="button" class="action all-Posts">
+          <i class="material-icons">forum</i>
+          <span class="action-text">All Current Posts</span></button
+        ><button type="button" class="action my-account">
           <i class="material-icons">account_circle</i>
-          <span class="action-text">My Account</span>
-        </button>
-        <button type="button" class="action logOut">
+          <span class="action-text">My Account</span></button
+        ><button type="button" class="action logOut">
           <i class="material-icons">logout</i>
           <span class="action-text">Logout</span>
         </button>
@@ -71,14 +71,17 @@
       <main>
         <section id="post-list" class="post-list">
           <h3 class="list-title">Current Posts</h3>
-          <div class="content current-posts"></div>
+          <div class="content current-posts" id="currentPosts">
+            <span class='loading-posts'>Loading Posts...</span>
+            
+          </div>
         </section>
       </main>
       
       <div class="modal modal-post">
         <div class="content">
           <h3>Create New Post</h3>
-          <form class="post-form" action="#" method="">
+          <form class="form post-form" action="#" method="">
             <label for="post-title">Post Title</label>
             <input type="text" name="post-title" id="post-title" required />
             <h5>This is a required field</h5>
@@ -87,7 +90,6 @@
               name="post-body"
               id="post-body"
               style="resize: none"
-              id="post-body"
               columns="30"
               rows="4"
               required
@@ -140,10 +142,69 @@
         </div>
       </div>
       
+      <div class="modal modal-edit">
+        <div class="content">
+          <h3>Edit Post</h3>
+          <form class="form edit-form" action="#" method="">
+            <label for="edit-title">Post Title</label>
+            <input type="text" name="edit-title" id="edit-title" required />
+            <h5>This is a required field</h5>
+            <label for="edit-body">Description</label>
+            <textarea
+              name="edit-body"
+              id="edit-body"
+              style="resize: none"
+              columns="30"
+              rows="4"
+              required
+            ></textarea>
+            <h5>This is a required field</h5>
+            <label for="edit-price">Asking Price (USD)</label>
+            <input
+              type="text"
+              id="edit-price"
+              name="edit-price"
+              placeholder="$0.00"
+              required
+            />
+            <h5>This is a required field</h5>
+            <label for="edit-location">Item Location</label>
+            <input
+              type="text"
+              name="edit-location"
+              id="edit-location"
+              placeholder="(optional)"
+            />
+            <label class="container">
+              Willing to deliver?
+              <input type="checkbox" id="editDeliveryBox" />
+              <span class="checkmark del"></span>
+            </label>
+            <div class="actions">
+              <button type="button" class="action edit-post when-valid">
+                <i class="material-icons">add_circle</i>
+                <span class="action-text">Edit</span>
+              </button>
+              <button
+                type="button"
+                disabled
+                class="action edit-post when-invalid">
+                <i class="material-icons">add_circle</i>
+                <span class="action-text">Edit</span>
+              </button>
+              <button type="button" class="action cancel">
+                <i class="material-icons">cancel</i>
+                <span class="action-text">Cancel</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
       <div class="modal modal-login">
         <div class="content">
           <h3>Login</h3>
-          <form class="login-form" action="#" method="">
+          <form class="form login-form" action="#" method="">
             <label for="login-name">Username:</label>
             <input type="text" id="login-name" required />
             <h5>This is a required field</h5>
@@ -179,7 +240,7 @@
       <div class="modal modal-create">
         <div class="content">
           <h3>Create Account</h3>
-          <form class="create-form" action="#" method="">
+          <form class="form create-form" action="#" method="">
             <label for="create-name">Username:</label>
             <input type="text" id="create-name" required />
             <h5>This is a required field</h5>
@@ -210,7 +271,7 @@
         <div class="content">
           <h3>Send Message to: <span class="seller"></span></h3>
           <h4>Post: <span class="listing-title"></Post:span></h4>
-          <form class="message-form" action="#" method="">
+          <form class="form message-form" action="#" method="">
             <label for="message-body">Message:</label>
             <textarea
             id="message-body" 
