@@ -302,11 +302,12 @@ const makePosts = (postArr, username, id) => {
   postArr.forEach((post) => {
     if (post.active) {
       $(".no-posts").addClass("hidden");
+      console.log(post);
       postListElement.append(renderPosts(post, username, id));
-      debugger;
-      post.messages.forEach((message) =>
-        postListElement.append(renderMessages(message))
-      );
+      post.messages.forEach((message) => {
+        const postElement = $(".post:last");
+        postElement.append(renderMessages(message));
+      });
     }
   });
 };
