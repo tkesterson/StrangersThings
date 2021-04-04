@@ -11,13 +11,10 @@ body {
 
 #app {
   display: grid;
-
   grid-template-rows: auto minmax(0, 1fr);
   grid-template-columns: auto minmax(0, 1fr);
-
   height: 100%;
   max-height: 100%;
-
   position: relative;
 }
 
@@ -31,9 +28,7 @@ header {
   font-style: italic;
   font-size: 48px;
   text-align: center;
-
   padding: 0.25em 0;
-
   background: #1b1b1b;
   color: #fafafa;
 }
@@ -44,27 +39,25 @@ header .searchField input[type="search"] {
   margin-top: 8px;
   border: none;
 }
+
 header .action.search {
   display: inline;
   margin: 8px;
 }
+
 header .action.search i {
   font-size: 32px;
 }
+
 .left-drawer {
   grid-row: 2;
   grid-column: 1;
-
   transition: width 0.5s ease, background 0.5s ease;
-
   width: 64px;
-
   background: #66c;
-
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-
   cursor: pointer;
 }
 
@@ -75,10 +68,8 @@ header .action.search i {
 
 button.action {
   padding: 8px;
-
   background: #1b1b1b;
   color: #fafafa;
-
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -100,7 +91,6 @@ button.action {
 .left-drawer .action-text {
   display: none;
   transition: 0.5s width linear;
-
   margin-left: 8px;
   font-family: "Noto Sans", sans-serif;
   font-weight: 500;
@@ -122,16 +112,12 @@ button.action {
 main {
   grid-row: 2;
   grid-column: 2;
-
   background: #88b;
   font-size: 16px;
-
   padding: 8px;
-
   display: grid;
   grid-gap: 8px;
   grid-template-columns: 0.5fr 2fr 0.5fr;
-
   overflow-x: scroll;
   overflow-y: hidden;
 }
@@ -175,27 +161,34 @@ main {
   display: flex;
   flex-direction: column;
 }
+
 .post p {
   font-size: 1.2em;
   font-weight: bold;
 }
+
 .post h3 .title {
   font-size: 1em;
   color: #111;
 }
+
 .post h3 .price {
   font-size: 0.7em;
   color: #777;
 }
+
 .post p {
   align-content: space-around;
 }
+
 .post a {
   color: #777;
 }
+
 .post a:hover {
   color: #111;
 }
+
 .post pre {
   font-family: sans-serif;
   white-space: pre-wrap;
@@ -208,12 +201,13 @@ main {
   background: #ddf;
   padding: 8px;
 }
+
 .post .actions .action {
   min-width: 7em;
-
   justify-content: center;
   justify-self: flex-end;
 }
+
 .post .actions .action:not(:first-of-type) {
   margin-left: 8px;
 }
@@ -234,11 +228,9 @@ main {
   left: 0;
   right: 0;
   bottom: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   backdrop-filter: blur(6px);
 }
 
@@ -311,33 +303,43 @@ button:disabled {
 .modal input:invalid:required {
   border-bottom: 3px solid red;
 }
+
 .modal textarea:invalid:required {
   border-bottom: 3px solid red;
 }
+
 .modal input:valid:required + h5 {
   display: none;
 }
+
 .modal textarea:valid:required + h5 {
   display: none;
 }
+
 form:invalid .when-valid {
   display: none;
 }
+
 form:valid .when-invalid {
   display: none;
 }
+
 .warning {
   color: red;
 }
+
 span.hidden {
   display: none;
 }
+
 button.hidden {
   display: none;
 }
+
 button.action.message {
   grid-column: 3/5;
 }
+/* CSS for custom checkboxes */
 /* Customize the label (the container) */
 .container {
   display: block;

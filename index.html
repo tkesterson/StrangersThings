@@ -23,8 +23,8 @@
       href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css"
     />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <!-- our hard work below -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js">
+    </script>
     <link rel="stylesheet" href="style.css" />
     <script defer src="app.js"></script>
     <script defer src="jqpricefix.js"></script>
@@ -58,7 +58,6 @@
           <i class="material-icons">add_circle</i>
           <span class="action-text">Create New Post</span>
         </button>
-
         <button type="button" class="action my-account">
           <i class="material-icons">account_circle</i>
           <span class="action-text">My Account</span>
@@ -68,12 +67,14 @@
           <span class="action-text">Logout</span>
         </button>
       </aside>
+      
       <main>
         <section id="post-list" class="post-list">
           <h3 class="list-title">Current Posts</h3>
           <div class="content current-posts"></div>
         </section>
       </main>
+      
       <div class="modal modal-post">
         <div class="content">
           <h3>Create New Post</h3>
@@ -81,7 +82,6 @@
             <label for="post-title">Post Title</label>
             <input type="text" name="post-title" id="post-title" required />
             <h5>This is a required field</h5>
-
             <label for="post-body">Description</label>
             <textarea
               name="post-body"
@@ -127,8 +127,7 @@
               <button
                 type="button"
                 disabled
-                class="action create-post when-invalid"
-              >
+                class="action create-post when-invalid">
                 <i class="material-icons">add_circle</i>
                 <span class="action-text">Create</span>
               </button>
@@ -140,6 +139,7 @@
           </form>
         </div>
       </div>
+      
       <div class="modal modal-login">
         <div class="content">
           <h3>Login</h3>
@@ -155,7 +155,6 @@
                 <i class="material-icons">account_circle</i>
                 <span class="action-text">Create Account</span>
               </button>
-
               <button type="button" class="action login-account when-valid">
                 <i class="material-icons">login</i>
                 <span class="action-text">Login</span>
@@ -163,8 +162,7 @@
               <button
                 type="button"
                 disabled
-                class="action login-account when-invalid"
-              >
+                class="action login-account when-invalid">
                 <i class="material-icons">login</i>
                 <span class="action-text">Login</span>
               </button>
@@ -177,6 +175,7 @@
           </form>
         </div>
       </div>
+      
       <div class="modal modal-create">
         <div class="content">
           <h3>Create Account</h3>
@@ -206,6 +205,7 @@
           </form>
         </div>
       </div>
+      
       <div class="modal modal-message">
         <div class="content">
           <h3>Send Message to: <span class="seller"></span></h3>
@@ -219,7 +219,6 @@
             rows="4"
             required></textarea>
             <h5>This is a required field</h5>
-            
             </footer>
             <div class="actions">
               <button type="button" class="action send-message when-valid">
@@ -229,8 +228,7 @@
               <button
                 type="button"
                 disabled
-                class="action send-message when-invalid"
-              >
+                class="action send-message when-invalid">
                 <i class="material-icons">message</i>
                 <span class="action-text">Send</span>
               </button>

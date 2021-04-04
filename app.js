@@ -1,6 +1,8 @@
 const BASE_URL =
   "https://strangers-things.herokuapp.com/api/2101-vpi-rm-web-pt";
+
 const state = { posts: [], matches: [] };
+
 let updateUi = () => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -16,6 +18,7 @@ let updateUi = () => {
     $("button.action.logout").addClass("hidden");
   }
 };
+
 async function fetchPosts() {
   try {
     const url = `${BASE_URL}/posts`;
@@ -27,12 +30,12 @@ async function fetchPosts() {
         Authorization: `Bearer ${token}`,
       },
     });
-
     return response.json();
   } catch (error) {
     throw error;
   }
 }
+
 async function populatePosts() {
   try {
     const { data } = await fetchPosts();
@@ -43,8 +46,8 @@ async function populatePosts() {
   } catch (error) {
     console.error(error);
   }
-  console.log(state.posts);
 }
+
 const renderPosts = (post, username, _id) => {
   let { title, price, description, location, willDeliver } = post;
   if (location === "[On Request]" || location === "")
@@ -53,49 +56,60 @@ const renderPosts = (post, username, _id) => {
   const displayName = username ? username : post.author.username;
   let userPost = null;
   const id = localStorage.getItem("id");
+  let loggedOut = false;
   if (id === post.author._id) userPost = true;
   if (id === _id) userPost = true;
+  if (!id) loggedOut = true;
   return $(`
 <div class="post">
-<h3>
-<span class="title">
-  ${title}
-</span>
-<span class="price">
+  <h3>
+    <span class="title">
+    ${title}
+    </span>
+    <span class="price">
     ${price}
-    <p class='post-author'><a class="displayName" href="#">${displayName}</a></p>
-  </span>
- </h3>
+      <p class='post-author'>
+        <a class="displayName" href="#">${displayName}</a>
+      </p>
+    </span>
+  </h3>
   <pre>${description}</pre>
   <footer class="actions">
-<span class="loc">${location}</span>
-<span class="delivery">Delivery Available:${willDeliver ? "✅" : "❌"}</span>
-${
-  userPost
-    ? `<button class="action edit">EDIT</button>
-    <button class="action delete">DELETE</button>`
-    : `<button class="action message">MESSAGE SELLER</button>`
-}
-
-    </footer>
-  
+    <span class="loc">${location}</span>
+    <span class="delivery">Delivery Available:${
+      willDeliver ? "✅" : "❌"
+    }</span>
+    ${
+      loggedOut
+        ? ""
+        : `${
+            userPost
+              ? `<button class="action edit">EDIT</button>
+      <button class="action delete">DELETE</button>`
+              : `<button class="action message">MESSAGE SELLER</button>`
+          }`
+    }
+    
+  </footer>
 </div>
 `).data("post", post);
 };
+
 const renderMessages = (messageObj) => {
-  console.log(messageObj);
   const { content, fromUser } = messageObj;
-  return `<div class="post">
-<h3>
-<span class="title">
-  Message from: ${fromUser.username}
-</span>
-  <pre>${content}</pre>
-  
-</div>`;
+  return $(`
+  <div class="post">
+    <h3>
+      <span class="title">
+        Message from: ${fromUser.username}
+      </span>
+      <pre>${content}</pre>
+    </h3>
+  </div>
+  `);
 };
+
 async function createPost(postObj) {
-  console.log(postObj);
   try {
     const url = `${BASE_URL}/posts`;
     const token = localStorage.getItem("token");
@@ -108,12 +122,12 @@ async function createPost(postObj) {
       body: JSON.stringify(postObj),
     });
     const newPost = await response.json();
-    console.log(newPost);
     return newPost;
   } catch (error) {
     throw error;
   }
 }
+
 async function updatePost(postObj) {
   try {
     const url = `${BASE_URL}/posts`;
@@ -122,6 +136,7 @@ async function updatePost(postObj) {
     throw error;
   }
 }
+
 async function deletePost(postId) {
   try {
     const url = `${BASE_URL}/posts/${postId}`;
@@ -152,10 +167,9 @@ const sendMessage = async (messageObj, postId) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-
       body: JSON.stringify(messageObj),
     });
-    console.log(response);
+    return response;
   } catch (error) {
     throw error;
   }
@@ -175,6 +189,7 @@ $(document).ready(function () {
     }
   });
 });
+
 const registerUser = async (userObj) => {
   try {
     const url = `${BASE_URL}/users/register`;
@@ -192,13 +207,13 @@ const registerUser = async (userObj) => {
       alert(newUser.data.message);
       userId();
     }
-
     console.log(newUser);
     return newUser;
   } catch (error) {
     throw error;
   }
 };
+
 const loginUser = async (userObj, username) => {
   try {
     const url = `${BASE_URL}/users/login`;
@@ -239,6 +254,7 @@ const userId = async () => {
     console.error(error);
   }
 };
+
 const userPage = async () => {
   try {
     const url = `${BASE_URL}/users/me`;
@@ -249,33 +265,27 @@ const userPage = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
+    const postObj = await response.json();
 
-    const userPage = await response.json();
-    console.log(userPage);
-    const posts = userPage.data.posts;
-    const username = userPage.data.username;
-    const _id = userPage.data._id;
-    const postListElement = $(".current-posts");
-    postListElement.empty();
-
-    posts.forEach((post) => {
-      if (post.active) {
-        console.log(post);
-        postListElement.append(renderPosts(post, username, _id));
-        post.messages.forEach((message) =>
-          postListElement.append(renderMessages(message))
-        );
-      }
-    });
+    const posts = postObj.data.posts;
+    const username = postObj.data.username;
+    const id = postObj.data._id;
+    makePosts(posts, username, id);
   } catch (error) {
     console.error(error);
   }
 };
-const makePosts = (postObj) => {
+
+const makePosts = (postArr, username, id) => {
   const postListElement = $(".current-posts");
   postListElement.empty();
-  postObj.forEach((post) => {
-    postListElement.append(renderPosts(post));
+  postArr.forEach((post) => {
+    if (post.active) {
+      postListElement.append(renderPosts(post, username, id));
+      post.messages.forEach((message) =>
+        postListElement.append(renderMessages(message))
+      );
+    }
   });
 };
 
@@ -314,11 +324,17 @@ $(document).ready(function () {
     makePosts(matches);
   });
 });
-populatePosts();
-updateUi();
+const bootStrap = () => {
+  populatePosts();
+  updateUi();
+};
+
+bootStrap();
+
 $("input[type=search]").on("search", function () {
   populatePosts();
 });
+
 $(".post-list").on("click", ".edit", async function () {
   const postElement = $(this).closest(".post");
   const post = postElement.data("post");
@@ -333,6 +349,7 @@ $(".post-list").on("click", ".post-author", function () {
   $("#searchBox").keyup();
   $(".searchField").removeClass("hidden");
 });
+
 $(".displayName a").click((event) => event.preventDefault());
 
 $(".post-list").on("click", ".delete", async function () {
@@ -378,8 +395,7 @@ $(".create-post").click(async (event) => {
   };
   if (oboBox.checked) postObj.post.price = `${postObj.post.price}, OBO`;
   await createPost(postObj);
-  updateUi();
-  populatePosts();
+  bootStrap();
   $(".post-form").trigger("reset");
   $(".modal").removeClass("open");
 });
@@ -389,6 +405,7 @@ $(".register").click(() => {
   $(".login-form").trigger("reset");
   $(".modal-create").addClass("open");
 });
+
 $(".create-account").click(async () => {
   const userObj = {
     user: {
@@ -404,7 +421,6 @@ $(".create-account").click(async () => {
 
 $(".login-account").click(async () => {
   const username = $("#login-name").val();
-
   const password = $("#login-password").val();
 
   const userObj = {
@@ -413,13 +429,13 @@ $(".login-account").click(async () => {
       password,
     },
   };
-  await loginUser(userObj, username);
 
+  await loginUser(userObj, username);
   $(".login-form").trigger("reset");
   $(".modal").removeClass("open");
-  populatePosts();
-  updateUi();
+  bootStrap();
 });
+
 $(".send-message").click(async () => {
   const content = $("#message-body").val();
   const id = $(".modal-message").data("id");
@@ -432,9 +448,9 @@ $(".send-message").click(async () => {
   await sendMessage(messageObj, id);
   $(".message-form").trigger("reset");
   $(".modal").removeClass("open");
-  populatePosts();
-  updateUi();
+  bootStrap();
 });
+
 $(".left-drawer").click(function (event) {
   if ($(event.target).hasClass("left-drawer")) {
     $("#app").toggleClass("drawer-open");
@@ -448,14 +464,16 @@ $("aside .add-post").click(() => {
 $("aside .login").click(() => {
   $(".modal-login").addClass("open");
 });
+
 $("aside .logout").click(() => {
   localStorage.clear("token");
   localStorage.clear("userName");
   localStorage.clear("id");
-  populatePosts();
-  updateUi();
+  bootStrap();
 });
+
 $(".my-account").click(() => {
   userPage();
 });
+
 $(".action.search").click(() => $(".searchField").toggleClass("hidden"));
